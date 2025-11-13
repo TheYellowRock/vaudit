@@ -1,0 +1,19 @@
+
+
+{% liquid
+  assign script_content = shop.metafields.blokid_app.pixel_script
+%}
+
+{% if script_content != blank %}
+  
+    {{ script_content }}
+
+{% endif %}
+
+
+{% schema %}
+{
+  "name": "BlokId Section",
+  "target": "head"
+}
+{% endschema %}
