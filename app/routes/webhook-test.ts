@@ -1,22 +1,21 @@
+// app/routes/webhook-test.ts
 import { json } from "app/utils/response.server";
-import crypto from "crypto";
+import { verifyHmac } from "app/utils/verify-hmac.server";
 import { ActionFunctionArgs } from "react-router";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const secret = process.env.SHOPIFY_API_SECRET!;
 
+export async function action({ request }: ActionFunctionArgs) {
   const body = await request.text();
-  const hmac = request.headers.get("x-shopify-hmac-sha256") || "";
+  const hmac = request.headers.get("X-Shopify-Hmac-Sha256");
 
-  const hash = crypto
-    .createHmac("sha256", secret)
-    .update(body, "utf8")
-    .digest("base64");
-
-  if (hash !== hmac) {
-    return new Response("Unauthorized", { status: 401 });
+  if (!verifyHmac(body, hmac)) {
+    console.error("❌ Invalid HMAC");
+    return new Response("Invalid HMAC", { status: 401 });
   }
 
-  // Respond OK so Shopify checker passes you
+  console.log("✅ Valid HMAC:", body);
   return json({ ok: true });
-};
+}
+
+export const loader = () =>
+  new Response("Webhook test endpoint", { status: 200 });
