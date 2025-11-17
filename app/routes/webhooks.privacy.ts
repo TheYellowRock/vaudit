@@ -38,9 +38,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // 5️⃣ Handle topics
   switch (topic) {
     case "shop/redact":
-      await prisma.session.deleteMany({ where: { shop } });
-      await prisma.shopSettings.deleteMany({ where: { shop } });
-
+      
       console.log(`🗑️ Deleted shop data: ${shop}`);
       break;
 
