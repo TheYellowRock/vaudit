@@ -1,70 +1,63 @@
+// app/routes/webhooks.privacy.ts
 import type { ActionFunctionArgs } from "react-router";
 import prisma from "../db.server";
 import crypto from "crypto";
 
-// 🔐 Use app secret from environment
-const SHOPIFY_SECRET = process.env.SHOPIFY_API_SECRET!;
-
-// Validate raw HMAC (Shopify test tool)
-function verifyRawHmac(body: string, hmac: string | null) {
+function verifyHmac(body: string, hmac: string | null) {
   if (!hmac) return false;
 
-  const generated = crypto
-    .createHmac("sha256", SHOPIFY_SECRET)
+  const secret = process.env.SHOPIFY_API_SECRET!;
+  const hash = crypto
+    .createHmac("sha256", secret)
     .update(body, "utf8")
     .digest("base64");
 
-  return generated === hmac;
+  return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(hmac));
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-  const rawBody = await request.text();
-  const hmacHeader = request.headers.get("x-shopify-hmac-sha256");
-  const topic = request.headers.get("x-shopify-topic");
-  const shop = request.headers.get("x-shopify-shop-domain");
+export const action = async ({ request }: ActionFunctionArgs) => {
+  // 1️⃣ Read raw body
+  const body = await request.text();
 
-  // --------------------------------------------------------------------
-  // 🧪 CASE 1 — This is the Shopify privacy TEST tool (no topic header)
-  // --------------------------------------------------------------------
-  if (!topic) {
-    console.log("🧪 Received Shopify test tool call");
+  // 2️⃣ Extract HMAC header
+  const hmac = request.headers.get("X-Shopify-Hmac-Sha256");
 
-    const valid = verifyRawHmac(rawBody, hmacHeader);
-    if (!valid) {
-      console.error("❌ Invalid HMAC for test call");
-      return new Response("Invalid HMAC", { status: 401 });
-    }
-
-    console.log("✅ Test HMAC passed");
-    return new Response("OK", { status: 200 });
+  // 3️⃣ Reject invalid HMAC (required for test)
+  if (!verifyHmac(body, hmac)) {
+    console.error("❌ Invalid HMAC");
+    return new Response("Unauthorized", { status: 401 });
   }
 
-  // --------------------------------------------------------------------
-  // 🟦 CASE 2 — Real Shopify GDPR webhook
-  // --------------------------------------------------------------------
-  console.log("📩 Real GDPR webhook:", { topic, shop });
+  // 4️⃣ Parse JSON AFTER validating HMAC
+  const data = JSON.parse(body);
+  const topic = request.headers.get("X-Shopify-Topic") || "";
+  const shop = request.headers.get("X-Shopify-Shop-Domain") || "";
 
+  console.log("📩 GDPR Webhook:", topic, shop, data);
+
+  // 5️⃣ Handle topics
   switch (topic) {
     case "shop/redact":
-      await prisma.session.deleteMany({ where: { shop: shop! } });
-      await prisma.shopSettings.deleteMany({ where: { shop: shop! } });
-      console.log(`🗑️ Deleted all data for shop: ${shop}`);
+      await prisma.session.deleteMany({ where: { shop } });
+      await prisma.shopSettings.deleteMany({ where: { shop } });
+
+      console.log(`🗑️ Deleted shop data: ${shop}`);
       break;
 
     case "customers/redact":
-      console.log("ℹ️ No customer data stored for this app.");
+      console.log("ℹ️ No customer data stored — nothing to delete.");
       break;
 
     case "customers/data_request":
-      console.log("ℹ️ No customer data stored. Returning empty.");
+      console.log("ℹ️ No customer data stored — nothing to return.");
       break;
 
     default:
-      console.warn("⚠️ Unknown webhook:", topic);
+      console.log("⚠️ Unknown privacy topic:", topic);
   }
 
   return new Response("OK", { status: 200 });
-}
+};
 
 export const loader = () =>
-  new Response("Privacy Webhooks OK", { status: 200 });
+  new Response("Privacy webhook endpoint", { status: 200 });
