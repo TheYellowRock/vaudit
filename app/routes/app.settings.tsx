@@ -66,7 +66,7 @@ export default function AppSettings() {
       <Page title="App Settings">
         <Layout.Section>
           <Card>
-            <BlockStack gap="400">
+            <BlockStack gap="800">
               <Bleed marginInline="400" marginBlock="400">
                 <SettingsPlaceHolder />
               </Bleed>
