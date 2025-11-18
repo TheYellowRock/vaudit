@@ -70,24 +70,26 @@ export default function AppSettings() {
               <Bleed marginInline="400" marginBlock="400">
                 <SettingsPlaceHolder />
               </Bleed>
-              <Form method="post">
-                <TextField
-                  label=""
-                  name="passKey"
-                  value={value}
-                  onChange={setValue}
-                  autoComplete="off"
-                  multiline={6}
-                />
-                <div style={{ marginTop: "1rem" }}>
-                  <Button submit>Save passkey</Button>
-                </div>
-                {actionData?.error && (
+              <BlockStack gap="400">
+                <Form method="post">
+                  <TextField
+                    label=""
+                    name="passKey"
+                    value={value}
+                    onChange={setValue}
+                    autoComplete="off"
+                    multiline={6}
+                  />
                   <div style={{ marginTop: "1rem" }}>
-                    <Banner tone="critical">{actionData.error}</Banner>
+                    <Button submit>Save passkey</Button>
                   </div>
-                )}
-              </Form>
+                  {actionData?.error && (
+                    <div style={{ marginTop: "1rem" }}>
+                      <Banner tone="critical">{actionData.error}</Banner>
+                    </div>
+                  )}
+                </Form>
+              </BlockStack>
             </BlockStack>
           </Card>
         </Layout.Section>
