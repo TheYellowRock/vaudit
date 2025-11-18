@@ -72,12 +72,12 @@ export default function AppSettings() {
               </Bleed>
               <Form method="post">
                 <TextField
-                  label="Enter your provided passkey"
+                  label=""
                   name="passKey"
                   value={value}
                   onChange={setValue}
                   autoComplete="off"
-                  multiline
+                  multiline={6}
                 />
                 <div style={{ marginTop: "1rem" }}>
                   <Button submit>Save passkey</Button>
