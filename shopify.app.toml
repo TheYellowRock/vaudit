@@ -2,7 +2,7 @@
 
 client_id = "db0b0b6545e29e7a2455a900e38b30dd"
 name = "vaudit-app"
-application_url = "https://vaudit-psi.vercel.app/"
+application_url = "https://vaudit-psi.vercel.app"
 embedded = true
 
 [build]
@@ -29,4 +29,4 @@ api_version = "2026-01"
 scopes = "read_content,read_themes,write_content,write_themes"
 
 [auth]
-redirect_urls = [ "https://vaudit-psi.vercel.app/" ]
+redirect_urls = [ "https://vaudit-psi.vercel.app/auth" ]
