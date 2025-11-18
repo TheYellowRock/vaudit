@@ -226,7 +226,7 @@ export default function Index() {
 
   return (
     <AppProvider i18n={en}>
-      <Page title="Home">
+      <Page title="Vaudit Dashboard">
         <Layout>
           <Layout.Section>
             <WelcomeCard />

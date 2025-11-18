@@ -7,14 +7,25 @@ export default function WelcomeCard() {
         <Bleed marginInline="400" marginBlock="400">
           <WelcomePlaceHolder />
         </Bleed>
-        <BlockStack gap="400">
+        <BlockStack gap="800">
           <BlockStack gap="200">
             <Text as="h2" variant="headingMd">
               Get You Token First
             </Text>
             <Text as="p" variant="bodyMd">
               To successfully install Vaudit, you need to get your token first,
-              if you don't have one please contact our support team <s-link href="https://stg-app.vaudit.com/ ">here</s-link>.
+              if you don't have one please contact our support team{" "}
+              <s-link href="https://stg-app.vaudit.com/ ">here</s-link>.
+            </Text>
+          </BlockStack>
+          <BlockStack gap="200">
+            <Text as="h2" variant="headingMd">
+              Second, Activate the theme app extension - Necessary
+            </Text>
+            <Text as="p" variant="bodyMd">
+              To enable Vaudit on your storefront, you must activate the theme
+              extension. Open your Theme Editor, find the Vaudit app block or
+              app embed, enable it, then click Save.
             </Text>
           </BlockStack>
           <BlockStack gap="200">
@@ -22,7 +33,8 @@ export default function WelcomeCard() {
               Next Step
             </Text>
             <Text as="p" variant="bodyMd">
-              You can add or update your token through the settings page <s-link href="/app/settings">here</s-link>.
+              You can add or update your token through the settings page{" "}
+              <s-link href="/app/settings">here</s-link>.
             </Text>
           </BlockStack>
         </BlockStack>

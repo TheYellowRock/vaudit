@@ -9,10 +9,13 @@ import {
   AppProvider,
   Banner,
   Page,
+  Text,
   Layout,
   Card,
   TextField,
   Button,
+  BlockStack,
+  Bleed,
 } from "@shopify/polaris";
 import { useState } from "react";
 import en from "@shopify/polaris/locales/en.json";
@@ -63,26 +66,45 @@ export default function AppSettings() {
       <Page title="App Settings">
         <Layout.Section>
           <Card>
-            <Form method="post">
-              <TextField
-                label="Enter your provided passkey"
-                name="passKey"
-                value={value}
-                onChange={setValue}
-                autoComplete="off"
-              />
-              <div style={{ marginTop: "1rem" }}>
-                <Button submit>Save passkey</Button>
-              </div>
-              {actionData?.error && (
+            <BlockStack gap="400">
+              <Bleed marginInline="400" marginBlock="400">
+                <SettingsPlaceHolder />
+              </Bleed>
+              <Form method="post">
+                <TextField
+                  label="Enter your provided passkey"
+                  name="passKey"
+                  value={value}
+                  onChange={setValue}
+                  autoComplete="off"
+                  multiline
+                />
                 <div style={{ marginTop: "1rem" }}>
-                  <Banner tone="critical">{actionData.error}</Banner>
+                  <Button submit>Save passkey</Button>
                 </div>
-              )}
-            </Form>
+                {actionData?.error && (
+                  <div style={{ marginTop: "1rem" }}>
+                    <Banner tone="critical">{actionData.error}</Banner>
+                  </div>
+                )}
+              </Form>
+            </BlockStack>
           </Card>
         </Layout.Section>
       </Page>
     </AppProvider>
   );
 }
+
+const SettingsPlaceHolder = () => {
+  return (
+    <div style={{ background: "#FF5A2B", padding: "10px", color: "white" }}>
+      <BlockStack>
+        <Text as="h2" variant="headingMd">
+          {" "}
+          Enter Your PassKey{" "}
+        </Text>
+      </BlockStack>
+    </div>
+  );
+};
