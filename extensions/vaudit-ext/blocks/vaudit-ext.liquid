@@ -1,7 +1,7 @@
 
 
 {% liquid
-  assign script_content = shop.metafields.blokid_app.pixel_script
+  assign script_content = shop.metafields.vaudit_app.pixel_script
 %}
 
 {% if script_content != blank %}
@@ -13,7 +13,7 @@
 
 {% schema %}
 {
-  "name": "BlokId Section",
+  "name": "Vaudit Section",
   "target": "head"
 }
 {% endschema %}
